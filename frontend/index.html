@@ -7,36 +7,48 @@
   <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="brand">
+  <div id="login-view" class="login-wrap">
+    <form id="login-form" class="login-card">
+      <div class="brand-row">
         <div class="brand-mark">THPT</div>
         <div>
-          <strong>Quản lý trường</strong>
-          <small>Backend + Frontend</small>
+          <h1>Quản lý trường THPT</h1>
+          <p>Đăng nhập hệ thống</p>
         </div>
       </div>
-      <nav id="nav">
-        <button data-page="dashboard" class="active">Tổng quan</button>
-        <button data-page="teachers">Giáo viên</button>
-        <button data-page="classes">Lớp học</button>
-        <button data-page="students">Học sinh</button>
-        <button data-page="subjects">Môn học</button>
-        <button data-page="grades">Điểm số</button>
-        <button data-page="schedules">Thời khóa biểu</button>
-        <button data-page="exams">Lịch thi</button>
-      </nav>
-    </aside>
+      <label>Tài khoản<input id="username" name="username" required autocomplete="username" value="admin"></label>
+      <label>Mật khẩu<input id="password" name="password" type="password" required autocomplete="current-password" value="admin123"></label>
+      <button class="btn primary" type="submit">Đăng nhập</button>
+      <div class="demo-box">
+        <strong>Tài khoản demo</strong>
+        <div>admin / admin123 (Quản trị)</div>
+        <div>gv01 / gv123 (Giáo viên)</div>
+        <div>phuhuynh01 / ph123 (Phụ huynh tra cứu điểm)</div>
+      </div>
+      <p id="login-error" class="error hidden"></p>
+    </form>
+  </div>
 
+  <div id="app-view" class="layout hidden">
+    <aside class="sidebar">
+      <div class="brand-row">
+        <div class="brand-mark">THPT</div>
+        <div>
+          <strong id="user-name">User</strong>
+          <small id="user-role">Role</small>
+        </div>
+      </div>
+      <nav id="nav"></nav>
+      <button id="btn-logout" class="btn ghost logout">Đăng xuất</button>
+    </aside>
     <main class="content">
       <header class="topbar">
         <div>
           <h1 id="page-title">Tổng quan</h1>
-          <p id="page-desc">Hệ thống quản lý trường THPT</p>
+          <p id="page-desc"></p>
         </div>
-        <button id="btn-add" class="btn primary hidden">+ Thêm mới</button>
+        <button id="btn-add" class="btn primary hidden">+ Thêm</button>
       </header>
-
       <div id="toast" class="toast hidden"></div>
       <section id="view"></section>
     </main>
@@ -46,7 +58,7 @@
     <div class="modal-card">
       <div class="modal-head">
         <h2 id="modal-title">Form</h2>
-        <button id="modal-close" class="btn ghost">✕</button>
+        <button type="button" id="modal-close" class="btn ghost">✕</button>
       </div>
       <form id="modal-form" class="form-grid"></form>
       <div class="modal-actions">

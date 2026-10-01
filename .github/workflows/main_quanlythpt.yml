@@ -25,7 +25,16 @@ jobs:
           python -m venv antenv
           source antenv/bin/activate
           pip install -r requirements.txt
-          python -c "from app import app; c=app.test_client(); assert c.get('/').status_code==200; assert b'Hello World' in c.get('/').data"
+          python - <<'PY'
+          from app import app
+          c = app.test_client()
+          assert c.get('/').status_code == 200
+          assert c.get('/health').status_code == 200
+          r = c.post('/api/auth/login', json={'username': 'admin', 'password': 'admin123'})
+          assert r.status_code == 200, r.get_json()
+          assert c.get('/api/stats').status_code == 200
+          print('smoke ok')
+          PY
 
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v4
@@ -33,10 +42,14 @@ jobs:
           name: python-app
           path: |
             app.py
+            api.py
+            models.py
+            seed.py
             requirements.txt
             runtime.txt
             startup.txt
             startup.sh
+            frontend/
 
   deploy:
     runs-on: ubuntu-latest
