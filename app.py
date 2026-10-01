@@ -1,49 +1,48 @@
 import os
 
-from flask import Flask, render_template, send_from_directory
+from flask import Flask
 
-from api import api_bp, seed_defaults
-from models import db
-
-
-def create_app():
-    app = Flask(
-        __name__,
-        static_folder="frontend/static",
-        template_folder="frontend",
-    )
-    app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "quan-ly-thpt-azure-dev")
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
-        "DATABASE_URL",
-        "sqlite:///" + os.path.join(os.path.dirname(__file__), "school.db"),
-    )
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-    db.init_app(app)
-    app.register_blueprint(api_bp)
-
-    with app.app_context():
-        db.create_all()
-        seed_defaults()
-
-    @app.route("/")
-    def index():
-        """Vào domain Azure sẽ trả giao diện frontend."""
-        return render_template("index.html")
-
-    @app.route("/favicon.ico")
-    def favicon():
-        return send_from_directory(
-            os.path.join(app.root_path, "frontend", "static"),
-            "favicon.ico",
-            mimetype="image/vnd.microsoft.icon",
-        )
-
-    return app
+app = Flask(__name__)
 
 
-app = create_app()
+@app.get("/")
+def home():
+    return """
+    <!doctype html>
+    <html lang="vi">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>Hello World</title>
+      <style>
+        body {
+          margin: 0;
+          min-height: 100vh;
+          display: grid;
+          place-items: center;
+          font-family: Segoe UI, sans-serif;
+          background: linear-gradient(135deg, #0b5cab, #148f77);
+          color: white;
+        }
+        h1 { font-size: 3rem; margin: 0; }
+        p { opacity: 0.9; }
+      </style>
+    </head>
+    <body>
+      <div>
+        <h1>Hello World</h1>
+        <p>Ứng dụng Quan lý THPT đã chạy trên Azure.</p>
+      </div>
+    </body>
+    </html>
+    """
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
-    app.run(host="0.0.0.0", port=port, debug=os.environ.get("FLASK_DEBUG") == "1")
+    app.run(host="0.0.0.0", port=port)

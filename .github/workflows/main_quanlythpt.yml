@@ -20,26 +20,23 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
+      - name: Install dependencies and smoke test
         run: |
           python -m venv antenv
           source antenv/bin/activate
           pip install -r requirements.txt
-          python -c "from app import app; c=app.test_client(); assert c.get('/').status_code==200; assert c.get('/api/health').status_code==200"
+          python -c "from app import app; c=app.test_client(); assert c.get('/').status_code==200; assert b'Hello World' in c.get('/').data"
 
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v4
         with:
           name: python-app
           path: |
-            .
-            !antenv/
-            !.venv/
-            !__pycache__/
-            !.git/
-            !.settings/
-            !*.db
-            !webapp/
+            app.py
+            requirements.txt
+            runtime.txt
+            startup.txt
+            startup.sh
 
   deploy:
     runs-on: ubuntu-latest
@@ -53,7 +50,6 @@ jobs:
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
-        id: deploy-to-webapp
         with:
           app-name: 'quanlythpt'
           slot-name: 'Production'
