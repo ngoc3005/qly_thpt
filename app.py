@@ -13,7 +13,27 @@ logging.basicConfig(
 logger = logging.getLogger("quanlythpt")
 
 
+def load_dotenv_if_present():
+    env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+    if not os.path.isfile(env_path):
+        return
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(env_path, override=False)
+    except Exception:
+        # fallback đọc thủ công nếu chưa có python-dotenv
+        with open(env_path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                key, value = line.split("=", 1)
+                os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
+
+
 def create_app():
+    load_dotenv_if_present()
+
     app = Flask(
         __name__,
         static_folder="frontend/static",
@@ -25,13 +45,10 @@ def create_app():
     init_error = None
     try:
         from api import api_bp
-        from db import init_db
+        from db import init_db, reset_client_cache
         from seed import seed_demo_data
 
-        # Mặc định local nếu chưa set
-        if not os.environ.get("MONGODB_URI") and not os.environ.get("MONGO_URL"):
-            os.environ["MONGODB_URI"] = "mongodb://127.0.0.1:27017"
-
+        reset_client_cache()
         init_db()
         seed_demo_data()
         app.register_blueprint(api_bp)
@@ -45,7 +62,7 @@ def create_app():
         if init_error:
             return (
                 "<h1>App đang lỗi kết nối MongoDB</h1>"
-                "<p>Hãy cấu hình Application Setting <code>MONGODB_URI</code> trên Azure.</p>"
+                "<p>Kiểm tra Application Setting <code>MONGODB_URI</code> trên Azure.</p>"
                 f"<pre style='white-space:pre-wrap'>{init_error}</pre>"
             ), 500
         return render_template("index.html")

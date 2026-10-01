@@ -1,16 +1,36 @@
 import os
 from functools import lru_cache
+from urllib.parse import quote_plus
 
 from pymongo import ASCENDING, MongoClient
+
+
+def build_mongo_uri():
+    uri = os.environ.get("MONGODB_URI") or os.environ.get("MONGO_URL")
+    if uri:
+        # Bổ sung param nếu thiếu
+        if "retryWrites" not in uri:
+            sep = "&" if "?" in uri else "?"
+            uri = f"{uri}{sep}retryWrites=true&w=majority"
+        return uri
+
+    username = os.environ.get("MONGODB_USERNAME")
+    password = os.environ.get("MONGODB_PASSWORD")
+    host = os.environ.get("MONGODB_HOST", "cluster0.eqitwke.mongodb.net")
+    if username and password:
+        user = quote_plus(username)
+        pwd = quote_plus(password)
+        return f"mongodb+srv://{user}:{pwd}@{host}/?retryWrites=true&w=majority"
+
+    raise RuntimeError(
+        "Chưa cấu hình MongoDB. Set MONGODB_URI hoặc MONGODB_USERNAME/MONGODB_PASSWORD trên Azure."
+    )
+
+
 @lru_cache(maxsize=1)
 def get_client():
-    uri = os.environ.get("MONGODB_URI") or os.environ.get("MONGO_URL")
-    if not uri:
-        raise RuntimeError(
-            "Chưa cấu hình MONGODB_URI. "
-            "Thêm Application setting trên Azure hoặc file .env local."
-        )
-    return MongoClient(uri, serverSelectionTimeoutMS=8000)
+    uri = build_mongo_uri()
+    return MongoClient(uri, serverSelectionTimeoutMS=12000)
 
 
 def get_db():
@@ -22,7 +42,6 @@ def get_db():
 def init_db():
     """Tạo index (idempotent) và kiểm tra kết nối."""
     db = get_db()
-    # Ping
     db.command("ping")
 
     db.users.create_index("username", unique=True)
