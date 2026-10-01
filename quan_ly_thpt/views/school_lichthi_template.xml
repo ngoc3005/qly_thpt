@@ -1,0 +1,310 @@
+<odoo>
+	<template id="tra_cuu_lich_thi" name="Tra cứu Lịch Thi">
+		<t t-call="website.layout">
+			<div class="container mt-5">
+				<h2 class="text-center mb-4">Tra cứu lịch thi</h2>
+
+				<!-- Form tra cứu -->
+				<div class="d-flex justify-content-center">
+					<form method="get" action="/tra-cuu-lich-thi/result"
+						class="w-100" style="max-width: 500px;">
+						<!-- Input mã học sinh -->
+						<div class="form-group">
+							<label for="student_code"
+								class="form-label font-weight-bold">Nhập mã học sinh:</label>
+							<input type="text" id="student_code" name="student_code"
+								class="form-control shadow-sm" placeholder="VD: HS001" />
+						</div>
+
+						<!-- Nút Tra cứu -->
+						<div class="text-center mt-3">
+							<button type="submit"
+								class="btn btn-primary btn-lg px-4 shadow">
+								<i class="fa fa-search"></i>
+								Tra cứu
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<!-- Thêm một chút style cho form -->
+			<style>
+				#student_grades_input .form-control {
+				border-radius: 8px;
+				border: 1px solid #ced4da;
+				padding: 10px;
+				}
+
+				#student_grades_input
+				.btn-primary {
+				background-color: #007bff;
+				border-color: #007bff;
+				}
+
+				#student_grades_input .btn-primary:hover {
+				background-color: #0056b3;
+				border-color: #004085;
+				}
+
+				#student_grades_input .form-label {
+				color:
+				#495057;
+				}
+
+				#student_grades_input h2 {
+				font-family: 'Arial', sans-serif;
+				font-size: 2rem;
+				color: #343a40;
+				}
+			</style>
+
+		</t>
+	</template>
+
+	<template id="tra_cuu_lich_thi_result"
+		name="Kết quả Tra cứu Lịch Thi">
+		<t t-call="website.layout">
+			<div class="container mt-5">
+				<h2 class="text-center">Kết quả Tra cứu Lịch Thi</h2>
+				<t t-if="lich_thi_ids">
+					<div class="mt-4">
+						<h4>
+							Học sinh:
+							<t t-esc="student.name" />
+						</h4>
+						<h5>
+							Mã học sinh:
+							<t t-esc="student.student_code" />
+						</h5>
+						<table class="table table-bordered mt-3">
+							<thead>
+								<tr>
+									<th>Phòng thi</th>
+									<th>Môn thi</th>
+									<th>Ngày thi</th>
+									<th>Giờ bắt đầu</th>
+									<th>Giờ kết thúc</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-foreach="lich_thi_ids" t-as="lich_thi">
+									<tr>
+										<td>
+											<t t-esc="lich_thi.name" />
+										</td>
+										<td>
+											<t t-if="len(lich_thi.lich_thi_id.mon_id) > 1">
+												<t
+													t-esc="', '.join(lich_thi.lich_thi_id.mon_id.mapped('name'))" />
+											</t>
+											<t t-else="">
+												<t t-esc="lich_thi.lich_thi_id.mon_id.name" />
+											</t>
+										</td>
+
+										<td>
+											<t t-esc="lich_thi.lich_thi_id.ngay_thi" />
+										</td>
+										<td>
+											<t t-esc="lich_thi.lich_thi_id.gio_bat_dau" />
+											giờ
+										</td>
+										<td>
+											<t t-esc="lich_thi.lich_thi_id.gio_ket_thuc" />
+											giờ
+										</td>
+									</tr>
+								</t>
+							</tbody>
+						</table>
+					</div>
+				</t>
+				<t t-else="">
+					<div class="alert alert-warning mt-3">
+						Không tìm thấy lịch thi cho học sinh này!
+					</div>
+				</t>
+				<a href="/tra-cuu-lich-thi" class="btn btn-secondary mt-3">Tra cứu lại</a>
+				<br />
+			</div>
+		</t>
+	</template>
+
+	<template id="tra_cuu_thoi_khoa_bieu">
+		<t t-call="website.layout">
+			<!-- Hiển thị thông báo lỗi nếu có -->
+			<t t-if="error">
+				<div class="alert alert-danger">
+					<p t-esc="error" />
+				</div>
+			</t>
+
+			<!-- Tiêu đề -->
+			<h2 class="text-center my-4">Tra cứu thời khóa biểu</h2>
+
+			<!-- Form tra cứu -->
+			<form action="/tra-cuu-thoi-khoa-bieu/result" method="get"
+				class="text-center">
+				<div class="form-group">
+					<label for="class_name" class="form-label font-weight-bold">Tên lớp học:</label>
+					<input type="text" id="class_name" name="class_name"
+						placeholder="Nhập tên lớp VD: 12A1" class="form-control mx-auto"
+						style="max-width: 400px;" required="required" />
+				</div>
+
+				<!-- Nút Tra cứu -->
+				<div class="text-center mt-3">
+					<button type="submit"
+						class="btn btn-primary btn-lg px-4 shadow">
+						<i class="fa fa-search"></i>
+						Tra cứu
+					</button>
+				</div>
+			</form>
+
+			<!-- Thêm một chút style cho form -->
+			<style>
+				#student_grades_input .form-control {
+				border-radius: 8px;
+				border: 1px solid #ced4da;
+				padding: 10px;
+				}
+
+				#student_grades_input
+				.btn-primary {
+				background-color: #007bff;
+				border-color: #007bff;
+				}
+
+				#student_grades_input .btn-primary:hover {
+				background-color: #0056b3;
+				border-color: #004085;
+				}
+
+				#student_grades_input .form-label {
+				color:
+				#495057;
+				}
+
+				#student_grades_input h2 {
+				font-family: 'Arial', sans-serif;
+				font-size: 2rem;
+				color: #343a40;
+				}
+			</style>
+		</t>
+	</template>
+
+
+	<template id="tra_cuu_thoi_khoa_bieu_result">
+		<t t-call="website.layout">
+			<div class="container my-4">
+				<h2 class="text-center mb-4">
+					Thời khóa biểu lớp
+					<t t-esc="class_obj.name" />
+				</h2>
+
+				<t t-if="schedule_by_day">
+					<table class="table table-striped table-bordered">
+						<thead class="thead-dark">
+							<tr>
+								<th class="text-center">Tiết</th>
+								<th class="text-center">Thứ 2</th>
+								<th class="text-center">Thứ 3</th>
+								<th class="text-center">Thứ 4</th>
+								<th class="text-center">Thứ 5</th>
+								<th class="text-center">Thứ 6</th>
+								<th class="text-center">Thứ 7</th>
+							</tr>
+
+						</thead>
+						<tbody>
+							<!-- Duyệt qua các tiết học -->
+							<tr t-foreach="['1', '2', '3', '4', '5']" t-as="period">
+								<td class="text-center align-middle">
+									<strong>
+										<t t-esc="period" />
+									</strong>
+								</td>
+								<td class="text-center">
+									<div>
+										<t
+											t-esc="schedule_by_day.get('monday', {}).get(period, {}).get('subject', 'N/A')" />
+										<br />
+										<small>
+											<t
+												t-esc="schedule_by_day.get('monday', {}).get(period, {}).get('teacher', 'N/A')" />
+										</small>
+									</div>
+								</td>
+								<td class="text-center">
+									<div>
+										<t
+											t-esc="schedule_by_day.get('tuesday', {}).get(period, {}).get('subject', 'N/A')" />
+										<br />
+										<small>
+											<t
+												t-esc="schedule_by_day.get('tuesday', {}).get(period, {}).get('teacher', 'N/A')" />
+										</small>
+									</div>
+								</td>
+								<td class="text-center">
+									<div>
+										<t
+											t-esc="schedule_by_day.get('wednesday', {}).get(period, {}).get('subject', 'N/A')" />
+										<br />
+										<small>
+											<t
+												t-esc="schedule_by_day.get('wednesday', {}).get(period, {}).get('teacher', 'N/A')" />
+										</small>
+									</div>
+								</td>
+								<td class="text-center">
+									<div>
+										<t
+											t-esc="schedule_by_day.get('thursday', {}).get(period, {}).get('subject', 'N/A')" />
+										<br />
+										<small>
+											<t
+												t-esc="schedule_by_day.get('thursday', {}).get(period, {}).get('teacher', 'N/A')" />
+										</small>
+									</div>
+								</td>
+								<td class="text-center">
+									<div>
+										<t
+											t-esc="schedule_by_day.get('friday', {}).get(period, {}).get('subject', 'N/A')" />
+										<br />
+										<small>
+											<t
+												t-esc="schedule_by_day.get('friday', {}).get(period, {}).get('teacher', 'N/A')" />
+										</small>
+									</div>
+								</td>
+								<td class="text-center">
+									<div>
+										<t
+											t-esc="schedule_by_day.get('saturday', {}).get(period, {}).get('subject', 'N/A')" />
+										<br />
+										<small>
+											<t
+												t-esc="schedule_by_day.get('saturday', {}).get(period, {}).get('teacher', 'N/A')" />
+										</small>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</t>
+				<t t-if="not schedule_by_day">
+					<p class="alert alert-warning">Không có thời khóa biểu cho lớp này!</p>
+				</t>
+			</div>
+		</t>
+	</template>
+
+
+
+
+</odoo>

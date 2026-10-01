@@ -1,0 +1,70 @@
+<odoo>
+	<record id="view_school_student_tree" model="ir.ui.view">
+		<field name="name">school.student.tree</field>
+		<field name="model">school.student</field>
+		<field name="arch" type="xml">
+			<tree string="Danh sách học sinh">
+				<field name="student_code" />
+				<field name="name" />
+				<field name="gender" />
+				<field name="class_id" />
+				<field name="ban_hoc" />
+				<field name="current_academic_year" />
+				<field name="status" />
+			</tree>
+		</field>
+	</record>
+	<record id="view_school_student_form" model="ir.ui.view">
+		<field name="name">school.student.form</field>
+		<field name="model">school.student</field>
+		<field name="arch" type="xml">
+			<form string="Chi tiết học sinh">
+				<sheet>
+					<header>
+                        <button name="capitalize_name" type="object"
+							string="Cập nhật tên riêng" class="btn-primary"/>
+                    </header>
+					<group>
+						<group>
+							<field name="name" />
+							<field name="student_code" />
+							<field name="birth_date" />
+							<field name="gender" />
+							<field name="phone" widget="phone" />
+						</group>
+						<group>
+							<field name="class_id" />
+							<field name="grade" />
+							<field name="ban_hoc" />
+							<field name="current_academic_year" />
+							<field name="status" />
+							<field name="address" />
+						</group>
+					</group>
+					<notebook>
+
+						<page string="Lịch sử học tập">
+							<field name="previous_class_ids">
+								<tree>
+									<field name="academic_year" />
+									<field name="average_semester_1" />
+									<field name="average_semester_2" />
+									<field name="average_year" />
+								</tree>
+							</field>
+						</page>
+						<page string="Lịch thi">
+							<field name="lich_thi_ids" readonly="1" />
+						</page>
+					</notebook>
+				</sheet>
+			</form>
+		</field>
+	</record>
+	<record id="action_school_student" model="ir.actions.act_window">
+		<field name="name">Học sinh</field>
+		<field name="res_model">school.student</field>
+		<field name="view_mode">tree,form</field>
+	</record>
+
+</odoo>

@@ -1,0 +1,44 @@
+<odoo>
+	<record id="view_grade_tree" model="ir.ui.view">
+		<field name="name">school.grade.tree</field>
+		<field name="model">school.grade</field>
+		<field name="arch" type="xml">
+			<tree string="Bảng điểm">
+				<field name="student_id" />
+				<field name="subject_id" />
+			</tree>
+		</field>
+	</record>
+
+
+	<record id="view_grade_form" model="ir.ui.view">
+		<field name="name">school.grade.form</field>
+		<field name="model">school.grade</field>
+		<field name="arch" type="xml">
+			<form string="Chi tiết bảng điểm">
+				<sheet>
+					<group string="Thông tin học sinh">
+						<field name="student_id" />
+						<field name="subject_id" />
+						<field name="history_id" />
+					</group>
+					
+					<group string="Kết quả">
+						<field name="semester_1_score" />
+						<field name="semester_2_score" />
+						<field name="average_score" />
+
+					</group>
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+
+	<record id="action_grade" model="ir.actions.act_window">
+		<field name="name">Bảng điểm</field>
+		<field name="res_model">school.grade</field>
+		<field name="view_mode">tree,form</field>
+	</record>
+
+</odoo>

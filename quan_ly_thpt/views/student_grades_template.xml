@@ -1,0 +1,182 @@
+<odoo>
+	<template id="student_grades_input" name="Nhập mã học sinh">
+		<t t-call="website.layout">
+			<div class="container py-5">
+				<!-- Tiêu đề -->
+				<h2 class="text-center mb-4">Tra cứu điểm học sinh</h2>
+
+				<!-- Form tra cứu -->
+				<div class="d-flex justify-content-center">
+					<form method="get" action="/student_grades" class="w-100"
+						style="max-width: 500px;">
+						<!-- Input mã học sinh -->
+						<div class="form-group">
+							<label for="student_code"
+								class="form-label font-weight-bold">Nhập mã học sinh:</label>
+							<input type="text" id="student_code" name="student_code"
+								class="form-control shadow-sm" placeholder="VD: HS001" />
+						</div>
+
+						<!-- Nút Tra cứu -->
+						<div class="text-center mt-3">
+							<button type="submit"
+								class="btn btn-primary btn-lg px-4 shadow">
+								<i class="fa fa-search"></i>
+								Tra cứu
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<!-- Thêm một chút style cho form -->
+			<style>
+				#student_grades_input .form-control {
+				border-radius: 8px;
+				border: 1px solid #ced4da;
+				padding: 10px;
+				}
+
+				#student_grades_input
+				.btn-primary {
+				background-color: #007bff;
+				border-color: #007bff;
+				}
+
+				#student_grades_input .btn-primary:hover {
+				background-color: #0056b3;
+				border-color: #004085;
+				}
+
+				#student_grades_input .form-label {
+				color:
+				#495057;
+				}
+
+				#student_grades_input h2 {
+				font-family: 'Arial', sans-serif;
+				font-size: 2rem;
+				color: #343a40;
+				}
+			</style>
+		</t>
+	</template>
+
+
+	<template id="student_grades_template"
+		name="Bảng điểm học sinh">
+		<t t-call="website.layout">
+			<div class="container my-5">
+				<h2 class="text-center mb-4">
+					Bảng điểm của học sinh:
+					<t t-esc="student.name" />
+				</h2>
+				<t t-if="previous_classes">
+					<t t-foreach="previous_classes" t-as="history">
+						<h3 class="text-center mt-5">
+							Bảng điểm Năm học:
+							<t t-esc="history.academic_year" />
+						</h3>
+						<table
+							class="table table-bordered table-striped table-hover">
+							<thead>
+								<tr>
+									<th>Môn học</th>
+									<th>Điểm học kỳ 1</th>
+									<th>Điểm học kỳ 2</th>
+									<th>Điểm trung bình cả năm</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-foreach="history.score_ids" t-as="grade">
+									<tr>
+										<td>
+											<t t-esc="grade.subject_id.name" />
+										</td>
+										<td>
+											<t t-esc="'{:.2f}'.format(grade.semester_1_score)" />
+										</td>
+										<td>
+											<t t-esc="'{:.2f}'.format(grade.semester_2_score)" />
+										</td>
+										<td>
+											<t t-esc="'{:.2f}'.format(grade.average_score)" />
+										</td>
+									</tr>
+								</t>
+							</tbody>
+						</table>
+						<div class="row">
+							<div class="col-md-4">
+								<strong>Điểm học kỳ 1:</strong>
+								<t t-esc="'{:.2f}'.format(history.average_semester_1)" />
+							</div>
+							<div class="col-md-4">
+								<strong>Điểm học kỳ 2:</strong>
+								<t t-esc="'{:.2f}'.format(history.average_semester_2)" />
+							</div>
+							<div class="col-md-4">
+								<strong>Điểm trung bình cả năm:</strong>
+								<t t-esc="'{:.2f}'.format(history.average_year)" />
+							</div>
+						</div>
+						<br/>
+						<div class="row">
+							<div class="col-md-4">
+								<strong>Hạnh kiểm kì 1:</strong>
+								<t t-esc="history.hk_k1" />
+							</div>
+							<div class="col-md-4">
+								<strong>Hạnh kiểm kì 2:</strong>
+								<t t-esc="history.hk_k2" />
+							</div>
+							<div class="col-md-4">
+								<strong>Hạnh kiểm cả năm:</strong>
+								<t t-esc="history.hl_cn" />
+							</div>
+						</div>
+						<br/>
+						<div class="row">
+							<div class="col-md-4">
+								<strong>Học lực kì 1:</strong>
+								<t t-esc="history.hl_k1" />
+							</div>
+							<div class="col-md-4">
+								<strong>Học lực kì 2:</strong>
+								<t t-esc="history.hl_k2" />
+							</div>
+							<div class="col-md-4">
+								<strong>Học lực cả năm:</strong>
+								<t t-esc="history.hk_cn" />
+							</div>
+						</div>
+						<div class="row mt-4">
+							<div class="col-md-12">
+								<strong>Nhận xét:</strong>
+								<p>
+									<t t-esc="history.nhan_xet" />
+								</p>
+							</div>
+						</div>
+						<div class="row mt-4">
+							<div class="col-md-12">
+								<strong>Kết luận:</strong>
+								<p>
+									<t t-esc="history.ket_luan" />
+								</p>
+							</div>
+						</div>
+						<hr class="my-4" />
+					</t>
+				</t>
+				<t t-else="">
+					<div class="alert alert-warning mt-3">
+						Không tìm thấy điểm cho học sinh này!
+					</div>
+					<a href="/student_grades" class="btn btn-secondary mt-3">Tra cứu lại</a>
+				</t>
+			</div>
+		</t>
+	</template>
+
+</odoo>
