@@ -3,6 +3,10 @@ __pycache__/
 .env
 .venv/
 venv/
+antenv/
 school.db
 *.db
 .DS_Store
+.settings/
+.project
+.pydevproject

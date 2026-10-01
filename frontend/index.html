@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quản lý THPT</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">THPT</div>
+        <div>
+          <strong>Quản lý trường</strong>
+          <small>Backend + Frontend</small>
+        </div>
+      </div>
+      <nav id="nav">
+        <button data-page="dashboard" class="active">Tổng quan</button>
+        <button data-page="teachers">Giáo viên</button>
+        <button data-page="classes">Lớp học</button>
+        <button data-page="students">Học sinh</button>
+        <button data-page="subjects">Môn học</button>
+        <button data-page="grades">Điểm số</button>
+        <button data-page="schedules">Thời khóa biểu</button>
+        <button data-page="exams">Lịch thi</button>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div>
+          <h1 id="page-title">Tổng quan</h1>
+          <p id="page-desc">Hệ thống quản lý trường THPT</p>
+        </div>
+        <button id="btn-add" class="btn primary hidden">+ Thêm mới</button>
+      </header>
+
+      <div id="toast" class="toast hidden"></div>
+      <section id="view"></section>
+    </main>
+  </div>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="modal-title">Form</h2>
+        <button id="modal-close" class="btn ghost">✕</button>
+      </div>
+      <form id="modal-form" class="form-grid"></form>
+      <div class="modal-actions">
+        <button type="button" id="modal-cancel" class="btn ghost">Hủy</button>
+        <button type="submit" form="modal-form" class="btn primary">Lưu</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
