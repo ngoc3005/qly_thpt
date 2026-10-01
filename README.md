@@ -30,10 +30,18 @@ python app.py
 
 Mở http://127.0.0.1:8000
 
-## Azure Startup Command
+## Azure Startup Command (bắt buộc)
+
+Azure Portal → App Service → **Configuration** → **General settings** → **Startup Command**:
 
 ```bash
-gunicorn --bind=0.0.0.0:8000 --timeout 600 app:app
+antenv/bin/gunicorn --bind=0.0.0.0:8000 --workers=1 --threads=4 --timeout 600 app:app
 ```
 
-Runtime: **Python 3.11**
+Thêm Application setting (Configuration → Application settings):
+
+- `SCM_DO_BUILD_DURING_DEPLOYMENT` = `false`
+
+Runtime: **Python 3.11** → Save → **Restart**.
+
+Nếu vẫn lỗi: **Monitoring → Log stream** để xem traceback.

@@ -4,6 +4,7 @@ __pycache__/
 .venv/
 venv/
 antenv/
+data/
 school.db
 *.db
 .DS_Store
