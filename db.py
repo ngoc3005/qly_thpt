@@ -22,6 +22,14 @@ def build_mongo_uri():
         pwd = quote_plus(password)
         return f"mongodb+srv://{user}:{pwd}@{host}/?retryWrites=true&w=majority"
 
+    on_azure = bool(os.environ.get("WEBSITE_INSTANCE_ID") or os.environ.get("WEBSITE_SITE_NAME"))
+    if on_azure:
+        raise RuntimeError(
+            "Azure chưa có MONGODB_URI. Vào App Service → Configuration → Application settings, "
+            "thêm MONGODB_URI (chuỗi Atlas) và MONGODB_DB=quanlythpt, rồi Restart. "
+            "Trên Atlas → Network Access, cho phép 0.0.0.0/0."
+        )
+
     # Local/CI fallback
     return "mongodb://127.0.0.1:27017"
 
@@ -51,6 +59,9 @@ def get_client():
     if _needs_tls(uri):
         kwargs["tls"] = True
         kwargs["tlsCAFile"] = certifi.where()
+        # Azure chặn hoặc không tới được máy chủ OCSP của Atlas nên handshake treo.
+        # Máy local thì OCSP trả lời ngay, nên cùng URI vẫn kết nối được.
+        kwargs["tlsDisableOCSPEndpointCheck"] = True
         on_azure = bool(os.environ.get("WEBSITE_INSTANCE_ID") or os.environ.get("WEBSITE_SITE_NAME"))
         insecure = os.environ.get("MONGODB_TLS_INSECURE", "").lower() in ("1", "true", "yes")
         if on_azure or insecure:

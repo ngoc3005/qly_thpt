@@ -60,19 +60,23 @@ def create_app():
     @app.get("/")
     def index():
         if init_error:
+            # Trả 200 để Azure không restart vòng lặp khi DB lỗi.
+            # Nội dung trang vẫn nói rõ lỗi kết nối.
             return (
                 "<h1>App đang lỗi kết nối MongoDB</h1>"
-                "<p>Kiểm tra Application Setting <code>MONGODB_URI</code> trên Azure.</p>"
+                "<p>Local chạy được vì có file .env. Azure không đọc file đó.</p>"
+                "<p>Thêm Application settings: <code>MONGODB_URI</code> và <code>MONGODB_DB</code>, "
+                "rồi trên Atlas mở Network Access cho <code>0.0.0.0/0</code>.</p>"
                 f"<pre style='white-space:pre-wrap'>{init_error}</pre>"
-            ), 500
+            ), 200
         return render_template("index.html")
 
     @app.get("/health")
     def health():
-        payload = {"status": "ok" if not init_error else "error", "db": "mongodb"}
+        payload = {"status": "ok" if not init_error else "degraded", "db": "mongodb"}
         if init_error:
             payload["error"] = init_error.splitlines()[-1]
-        return jsonify(payload), (200 if not init_error else 500)
+        return jsonify(payload), 200
 
     return app
 
