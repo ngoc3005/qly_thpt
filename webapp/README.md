@@ -45,7 +45,7 @@ postgresql://user:password@host:5432/dbname
 
 Nếu không set `DATABASE_URL`, app dùng SQLite file `school.db` (ổn để demo; production nên dùng PostgreSQL).
 
-File `webapp/runtime.txt` đã ghim runtime `python-3.11`.
+File `runtime.txt` đã ghim runtime `python-3.11`.
 
 ### Cách 2: Azure CLI
 

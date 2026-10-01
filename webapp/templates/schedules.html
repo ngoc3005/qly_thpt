@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Thời khóa biểu{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1 class="h3 mb-0">Thời khóa biểu</h1>
+  <a class="btn btn-primary" href="{{ url_for('schedule_new') }}">+ Thêm tiết</a>
+</div>
+
+<form class="row g-2 mb-3" method="get">
+  <div class="col-md-4">
+    <select class="form-select" name="class_id" onchange="this.form.submit()">
+      <option value="">-- Tất cả lớp --</option>
+      {% for c in classes %}
+      <option value="{{ c.id }}" {% if selected_class_id == c.id %}selected{% endif %}>
+        {{ c.name }} ({{ c.academic_year }})
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+</form>
+
+<div class="card card-form">
+  <div class="table-responsive">
+    <table class="table table-hover mb-0 align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Lớp</th>
+          <th>Ngày</th>
+          <th>Tiết</th>
+          <th>Môn</th>
+          <th>Giáo viên</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{{ item.school_class.name }}</td>
+          <td>{{ DAY_LABELS.get(item.day_of_week, item.day_of_week) }}</td>
+          <td>Tiết {{ item.period }}</td>
+          <td>{{ item.subject.name }}</td>
+          <td>{{ item.teacher.name }}</td>
+          <td class="text-end">
+            <form class="d-inline" method="post" action="{{ url_for('schedule_delete', item_id=item.id) }}" onsubmit="return confirm('Xóa tiết này?')">
+              <button class="btn btn-sm btn-outline-danger">Xóa</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-center text-secondary py-4">Chưa có thời khóa biểu.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

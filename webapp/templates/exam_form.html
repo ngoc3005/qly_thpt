@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Sửa' if item else 'Thêm' }} lịch thi{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card card-form p-4">
+      <h1 class="h4 mb-3">{{ 'Sửa' if item else 'Thêm' }} lịch thi</h1>
+      <form method="post">
+        <div class="mb-3">
+          <label class="form-label">Tên lịch thi</label>
+          <input class="form-control" name="name" required value="{{ item.name if item else '' }}" placeholder="VD: Thi HK1 Toán khối 12">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Môn thi</label>
+          <select class="form-select" name="subject_id" required>
+            {% for s in subjects %}
+            <option value="{{ s.id }}" {% if item and item.subject_id == s.id %}selected{% endif %}>{{ s.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Khối</label>
+            <select class="form-select" name="grade" required>
+              {% for key, label in GRADE_LABELS.items() %}
+              <option value="{{ key }}" {% if item and item.grade == key %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Ban thi</label>
+            <select class="form-select" name="ban_thi" required>
+              {% for key, label in BAN_THI_LABELS.items() %}
+              <option value="{{ key }}" {% if item and item.ban_thi == key %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Ngày thi</label>
+          <input class="form-control" type="date" name="exam_date" required value="{{ item.exam_date if item else '' }}">
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Giờ bắt đầu</label>
+            <input class="form-control" type="time" name="start_time" required value="{{ item.start_time if item else '07:30' }}">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Giờ kết thúc</label>
+            <input class="form-control" type="time" name="end_time" required value="{{ item.end_time if item else '09:00' }}">
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-primary">Lưu</button>
+          <a class="btn btn-outline-secondary" href="{{ url_for('exams') }}">Hủy</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

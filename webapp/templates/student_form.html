@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Sửa' if item else 'Thêm' }} học sinh{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card card-form p-4">
+      <h1 class="h4 mb-3">{{ 'Sửa' if item else 'Thêm' }} học sinh</h1>
+      <form method="post">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Họ và tên</label>
+            <input class="form-control" name="name" required value="{{ item.name if item else '' }}">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Ngày sinh</label>
+            <input class="form-control" type="date" name="birth_date" value="{{ item.birth_date if item and item.birth_date else '' }}">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Giới tính</label>
+            <select class="form-select" name="gender">
+              <option value="">--</option>
+              {% for key, label in GENDER_LABELS.items() if key != 'other' %}
+              <option value="{{ key }}" {% if item and item.gender == key %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Lớp</label>
+            <select class="form-select" name="class_id">
+              <option value="">-- Chọn lớp --</option>
+              {% for c in classes %}
+              <option value="{{ c.id }}" {% if item and item.class_id == c.id %}selected{% endif %}>
+                {{ c.name }} ({{ c.academic_year }})
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Ban học</label>
+            <select class="form-select" name="ban_hoc" required>
+              {% for key, label in BAN_HOC_LABELS.items() %}
+              <option value="{{ key }}" {% if item and item.ban_hoc == key %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Số điện thoại</label>
+            <input class="form-control" name="phone" value="{{ item.phone if item else '' }}">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Hạnh kiểm</label>
+            <select class="form-select" name="conduct">
+              <option value="">--</option>
+              {% for key, label in CONDUCT_LABELS.items() %}
+              <option value="{{ key }}" {% if item and item.conduct == key %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Trạng thái</label>
+            <select class="form-select" name="status">
+              {% for key, label in STATUS_LABELS.items() %}
+              <option value="{{ key }}" {% if item and item.status == key %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Địa chỉ</label>
+            <textarea class="form-control" name="address" rows="2">{{ item.address if item else '' }}</textarea>
+          </div>
+        </div>
+        <div class="d-flex gap-2 mt-4">
+          <button class="btn btn-primary">Lưu</button>
+          <a class="btn btn-outline-secondary" href="{{ url_for('students') }}">Hủy</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

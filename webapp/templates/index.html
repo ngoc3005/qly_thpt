@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Trang chủ - Quản lý THPT{% endblock %}
+{% block content %}
+<div class="mb-4">
+  <h1 class="h3 mb-1">Hệ thống quản lý trường THPT</h1>
+  <p class="text-secondary mb-0">Ứng dụng web đơn giản, sẵn sàng chạy trên Microsoft Azure.</p>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-4 col-lg-2">
+    <div class="card stat-card p-3">
+      <div class="text-secondary small">Giáo viên</div>
+      <div class="stat-value">{{ teacher_count }}</div>
+    </div>
+  </div>
+  <div class="col-md-4 col-lg-2">
+    <div class="card stat-card p-3">
+      <div class="text-secondary small">Lớp học</div>
+      <div class="stat-value">{{ class_count }}</div>
+    </div>
+  </div>
+  <div class="col-md-4 col-lg-2">
+    <div class="card stat-card p-3">
+      <div class="text-secondary small">Học sinh</div>
+      <div class="stat-value">{{ student_count }}</div>
+    </div>
+  </div>
+  <div class="col-md-4 col-lg-2">
+    <div class="card stat-card p-3">
+      <div class="text-secondary small">Môn học</div>
+      <div class="stat-value">{{ subject_count }}</div>
+    </div>
+  </div>
+  <div class="col-md-4 col-lg-2">
+    <div class="card stat-card p-3">
+      <div class="text-secondary small">Bảng điểm</div>
+      <div class="stat-value">{{ grade_count }}</div>
+    </div>
+  </div>
+  <div class="col-md-4 col-lg-2">
+    <div class="card stat-card p-3">
+      <div class="text-secondary small">Lịch thi</div>
+      <div class="stat-value">{{ exam_count }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="card card-form mt-4 p-4">
+  <h2 class="h5">Bắt đầu nhanh</h2>
+  <ol class="mb-0">
+    <li>Thêm <a href="{{ url_for('teachers') }}">giáo viên</a> và <a href="{{ url_for('subjects') }}">môn học</a></li>
+    <li>Tạo <a href="{{ url_for('classes') }}">lớp học</a>, gán giáo viên chủ nhiệm</li>
+    <li>Nhập <a href="{{ url_for('students') }}">học sinh</a>, <a href="{{ url_for('grades') }}">điểm số</a>, <a href="{{ url_for('schedules') }}">thời khóa biểu</a></li>
+  </ol>
+</div>
+{% endblock %}

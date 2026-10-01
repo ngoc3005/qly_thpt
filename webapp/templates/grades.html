@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Điểm số{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1 class="h3 mb-0">Điểm số</h1>
+  <a class="btn btn-primary" href="{{ url_for('grade_new') }}">+ Nhập điểm</a>
+</div>
+<div class="card card-form">
+  <div class="table-responsive">
+    <table class="table table-hover mb-0 align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Học sinh</th>
+          <th>Môn</th>
+          <th>Năm học</th>
+          <th>HK1</th>
+          <th>HK2</th>
+          <th>TB năm</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{{ item.student.name }} <small class="text-secondary">({{ item.student.student_code }})</small></td>
+          <td>{{ item.subject.name }}</td>
+          <td>{{ item.year }}</td>
+          <td>{{ item.semester_1_score if item.semester_1_score is not none else '-' }}</td>
+          <td>{{ item.semester_2_score if item.semester_2_score is not none else '-' }}</td>
+          <td><strong>{{ item.average_score }}</strong></td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('grade_edit', item_id=item.id) }}">Sửa</a>
+            <form class="d-inline" method="post" action="{{ url_for('grade_delete', item_id=item.id) }}" onsubmit="return confirm('Xóa điểm này?')">
+              <button class="btn btn-sm btn-outline-danger">Xóa</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7" class="text-center text-secondary py-4">Chưa có điểm.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

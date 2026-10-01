@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Sửa' if item else 'Thêm' }} môn học{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card card-form p-4">
+      <h1 class="h4 mb-3">{{ 'Sửa' if item else 'Thêm' }} môn học</h1>
+      <form method="post">
+        <div class="mb-3">
+          <label class="form-label">Tên môn học</label>
+          <input class="form-control" name="name" required value="{{ item.name if item else '' }}">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Số tiết / tuần</label>
+          <input class="form-control" type="number" min="1" max="10" name="so_tiet" required value="{{ item.so_tiet if item else 2 }}">
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-primary">Lưu</button>
+          <a class="btn btn-outline-secondary" href="{{ url_for('subjects') }}">Hủy</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

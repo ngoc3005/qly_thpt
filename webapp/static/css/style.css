@@ -1,0 +1,39 @@
+body {
+  background: #f5f7fb;
+  color: #1f2937;
+}
+
+.stat-card {
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.stat-card .stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0d6efd;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.table thead th {
+  white-space: nowrap;
+}
+
+.card-form {
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.badge-soft {
+  background: #e7f1ff;
+  color: #0d6efd;
+}

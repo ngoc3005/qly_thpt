@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Sửa' if item else 'Thêm' }} giáo viên{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card card-form p-4">
+      <h1 class="h4 mb-3">{{ 'Sửa' if item else 'Thêm' }} giáo viên</h1>
+      <form method="post">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Họ và tên</label>
+            <input class="form-control" name="name" required value="{{ item.name if item else '' }}">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Năm sinh</label>
+            <input class="form-control" type="number" name="birth_year" value="{{ item.birth_year if item and item.birth_year else '' }}">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Giới tính</label>
+            <select class="form-select" name="gender">
+              <option value="">--</option>
+              {% for key, label in GENDER_LABELS.items() %}
+              <option value="{{ key }}" {% if item and item.gender == key %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Số điện thoại</label>
+            <input class="form-control" name="phone" placeholder="09xxxxxxxx" value="{{ item.phone if item else '' }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Email</label>
+            <input class="form-control" type="email" name="email" value="{{ item.email if item else '' }}">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Địa chỉ</label>
+            <textarea class="form-control" name="address" rows="2">{{ item.address if item else '' }}</textarea>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Môn giảng dạy</label>
+            <select class="form-select" name="subject_ids" multiple size="6">
+              {% set selected = item.subjects | map(attribute='id') | list if item else [] %}
+              {% for s in subjects %}
+              <option value="{{ s.id }}" {% if s.id in selected %}selected{% endif %}>{{ s.name }}</option>
+              {% endfor %}
+            </select>
+            <div class="form-text">Giữ Ctrl (Windows) để chọn nhiều môn.</div>
+          </div>
+        </div>
+        <div class="d-flex gap-2 mt-4">
+          <button class="btn btn-primary">Lưu</button>
+          <a class="btn btn-outline-secondary" href="{{ url_for('teachers') }}">Hủy</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

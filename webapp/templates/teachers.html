@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Giáo viên{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1 class="h3 mb-0">Giáo viên</h1>
+  <a class="btn btn-primary" href="{{ url_for('teacher_new') }}">+ Thêm giáo viên</a>
+</div>
+<div class="card card-form">
+  <div class="table-responsive">
+    <table class="table table-hover mb-0 align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Mã GV</th>
+          <th>Họ tên</th>
+          <th>Giới tính</th>
+          <th>SĐT</th>
+          <th>Môn dạy</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td><span class="badge badge-soft">{{ item.teacher_code }}</span></td>
+          <td>{{ item.name }}</td>
+          <td>{{ GENDER_LABELS.get(item.gender, '-') }}</td>
+          <td>{{ item.phone or '-' }}</td>
+          <td>{{ item.subjects | map(attribute='name') | join(', ') or '-' }}</td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('teacher_edit', item_id=item.id) }}">Sửa</a>
+            <form class="d-inline" method="post" action="{{ url_for('teacher_delete', item_id=item.id) }}" onsubmit="return confirm('Xóa giáo viên này?')">
+              <button class="btn btn-sm btn-outline-danger">Xóa</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-center text-secondary py-4">Chưa có giáo viên.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

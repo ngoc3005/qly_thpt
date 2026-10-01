@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Thêm tiết học{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card card-form p-4">
+      <h1 class="h4 mb-3">Thêm tiết học</h1>
+      <form method="post">
+        <div class="mb-3">
+          <label class="form-label">Lớp</label>
+          <select class="form-select" name="class_id" required>
+            {% for c in classes %}
+            <option value="{{ c.id }}">{{ c.name }} ({{ c.academic_year }})</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Môn học</label>
+          <select class="form-select" name="subject_id" required>
+            {% for s in subjects %}
+            <option value="{{ s.id }}">{{ s.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Giáo viên</label>
+          <select class="form-select" name="teacher_id" required>
+            {% for t in teachers %}
+            <option value="{{ t.id }}">{{ t.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Ngày trong tuần</label>
+            <select class="form-select" name="day_of_week" required>
+              {% for key, label in DAY_LABELS.items() %}
+              <option value="{{ key }}">{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Tiết</label>
+            <select class="form-select" name="period" required>
+              {% for p in ['1','2','3','4','5'] %}
+              <option value="{{ p }}">Tiết {{ p }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-primary">Lưu</button>
+          <a class="btn btn-outline-secondary" href="{{ url_for('schedules') }}">Hủy</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

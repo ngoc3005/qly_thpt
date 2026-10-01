@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Sửa' if item else 'Thêm' }} lớp học{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card card-form p-4">
+      <h1 class="h4 mb-3">{{ 'Sửa' if item else 'Thêm' }} lớp học</h1>
+      <form method="post">
+        <div class="mb-3">
+          <label class="form-label">Tên lớp</label>
+          <input class="form-control" name="name" required placeholder="VD: 10A1" value="{{ item.name if item else '' }}">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Khối</label>
+          <select class="form-select" name="grade" required>
+            {% for key, label in GRADE_LABELS.items() %}
+            <option value="{{ key }}" {% if item and item.grade == key %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Năm học</label>
+          <input class="form-control" name="academic_year" required placeholder="2024-2025" value="{{ item.academic_year if item else '' }}">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Giáo viên chủ nhiệm</label>
+          <select class="form-select" name="homeroom_teacher_id">
+            <option value="">-- Chọn --</option>
+            {% for t in teachers %}
+            <option value="{{ t.id }}" {% if item and item.homeroom_teacher_id == t.id %}selected{% endif %}>{{ t.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-primary">Lưu</button>
+          <a class="btn btn-outline-secondary" href="{{ url_for('classes') }}">Hủy</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
