@@ -17,6 +17,11 @@ jobs:
         image: mongo:7
         ports:
           - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.runCommand({ ping: 1 }).ok'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
 
     steps:
       - uses: actions/checkout@v4
@@ -28,7 +33,7 @@ jobs:
 
       - name: Create venv, install deps, smoke test
         env:
-          MONGODB_URI: mongodb://127.0.0.1:27017
+          MONGODB_URI: mongodb://127.0.0.1:27017/?directConnection=true
           MONGODB_DB: quanlythpt_ci
         run: |
           python -m venv antenv
@@ -36,6 +41,12 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           python - <<'PY'
+          from db import reset_client_cache, init_db, get_db
+          from seed import seed_demo_data
+          reset_client_cache()
+          init_db()
+          seed_demo_data()
+          assert get_db().users.find_one({'username': 'admin'})
           from app import app
           c = app.test_client()
           assert c.get('/health').status_code == 200, c.get('/health').get_json()
