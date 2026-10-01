@@ -2,13 +2,13 @@ import os
 from functools import lru_cache
 from urllib.parse import quote_plus
 
+import certifi
 from pymongo import ASCENDING, MongoClient
 
 
 def build_mongo_uri():
     uri = os.environ.get("MONGODB_URI") or os.environ.get("MONGO_URL")
     if uri:
-        # Bổ sung param nếu thiếu
         if "retryWrites" not in uri:
             sep = "&" if "?" in uri else "?"
             uri = f"{uri}{sep}retryWrites=true&w=majority"
@@ -30,7 +30,20 @@ def build_mongo_uri():
 @lru_cache(maxsize=1)
 def get_client():
     uri = build_mongo_uri()
-    return MongoClient(uri, serverSelectionTimeoutMS=12000)
+    # Azure App Service thường thiếu CA roots → dùng certifi
+    kwargs = {
+        "serverSelectionTimeoutMS": 30000,
+        "connectTimeoutMS": 20000,
+        "tls": True,
+        "tlsCAFile": certifi.where(),
+    }
+    # Azure App Service đôi khi lỗi TLS handshake với Atlas
+    on_azure = bool(os.environ.get("WEBSITE_INSTANCE_ID") or os.environ.get("WEBSITE_SITE_NAME"))
+    insecure = os.environ.get("MONGODB_TLS_INSECURE", "").lower() in ("1", "true", "yes")
+    if on_azure or insecure:
+        kwargs["tlsAllowInvalidCertificates"] = True
+
+    return MongoClient(uri, **kwargs)
 
 
 def get_db():
