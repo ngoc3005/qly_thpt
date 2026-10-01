@@ -1,101 +1,122 @@
-from datetime import date
-
-from models import (
-    ClassTransfer,
-    Grade,
-    SchoolClass,
-    Semester,
-    Student,
-    Subject,
-    Teacher,
-    User,
-    db,
-)
+from db import get_db
+from models import hash_password
 
 
 def seed_demo_data():
-    """Tạo dữ liệu + tài khoản demo nếu DB trống."""
-    if User.query.filter_by(username="admin").first():
+    db = get_db()
+    if db.users.find_one({"username": "admin"}):
         return
 
-    subjects = [
-        Subject(name="Toán", periods=4),
-        Subject(name="Ngữ văn", periods=4),
-        Subject(name="Tiếng Anh", periods=3),
-        Subject(name="Vật lý", periods=2),
-        Subject(name="Hóa học", periods=2),
-        Subject(name="Sinh học", periods=2),
-        Subject(name="Lịch sử", periods=2),
-        Subject(name="Địa lý", periods=2),
-    ]
-    db.session.add_all(subjects)
+    subject_ids = []
+    for name, periods in [
+        ("Toán", 4), ("Ngữ văn", 4), ("Tiếng Anh", 3), ("Vật lý", 2),
+        ("Hóa học", 2), ("Sinh học", 2), ("Lịch sử", 2), ("Địa lý", 2),
+    ]:
+        subject_ids.append(db.subjects.insert_one({"name": name, "periods": periods}).inserted_id)
 
-    t1 = Teacher(name="Nguyễn Văn An", gender="male", phone="0901111222", email="an.gv@thpt.vn", subject_name="Toán")
-    t2 = Teacher(name="Trần Thị Bình", gender="female", phone="0902222333", email="binh.gv@thpt.vn", subject_name="Ngữ văn")
-    t3 = Teacher(name="Lê Minh Châu", gender="female", phone="0903333444", email="chau.gv@thpt.vn", subject_name="Tiếng Anh")
-    db.session.add_all([t1, t2, t3])
-    db.session.flush()
-    for t in (t1, t2, t3):
-        t.assign_code()
+    t1 = db.teachers.insert_one({
+        "name": "Nguyễn Văn An", "gender": "male", "phone": "0901111222",
+        "email": "an.gv@thpt.vn", "subject_name": "Toán",
+    }).inserted_id
+    t2 = db.teachers.insert_one({
+        "name": "Trần Thị Bình", "gender": "female", "phone": "0902222333",
+        "email": "binh.gv@thpt.vn", "subject_name": "Ngữ văn",
+    }).inserted_id
+    t3 = db.teachers.insert_one({
+        "name": "Lê Minh Châu", "gender": "female", "phone": "0903333444",
+        "email": "chau.gv@thpt.vn", "subject_name": "Tiếng Anh",
+    }).inserted_id
+    db.teachers.update_one({"_id": t1}, {"$set": {"code": f"GV-{str(t1)[-5:].upper()}"}})
+    db.teachers.update_one({"_id": t2}, {"$set": {"code": f"GV-{str(t2)[-5:].upper()}"}})
+    db.teachers.update_one({"_id": t3}, {"$set": {"code": f"GV-{str(t3)[-5:].upper()}"}})
 
-    c10a1 = SchoolClass(name="10A1", grade_level="10", academic_year="2025-2026", homeroom_teacher_id=t1.id)
-    c10a2 = SchoolClass(name="10A2", grade_level="10", academic_year="2025-2026", homeroom_teacher_id=t2.id)
-    c11a1 = SchoolClass(name="11A1", grade_level="11", academic_year="2025-2026", homeroom_teacher_id=t3.id)
-    db.session.add_all([c10a1, c10a2, c11a1])
-    db.session.flush()
+    c10a1 = db.classes.insert_one({
+        "name": "10A1", "grade_level": "10", "academic_year": "2025-2026",
+        "homeroom_teacher_id": t1,
+    }).inserted_id
+    c10a2 = db.classes.insert_one({
+        "name": "10A2", "grade_level": "10", "academic_year": "2025-2026",
+        "homeroom_teacher_id": t2,
+    }).inserted_id
+    db.classes.insert_one({
+        "name": "11A1", "grade_level": "11", "academic_year": "2025-2026",
+        "homeroom_teacher_id": t3,
+    })
 
-    s1 = Student(
-        name="Phạm Minh Đức", birth_date=date(2009, 5, 12), gender="male",
-        ban_hoc="tu_nhien", parent_name="Phạm Văn Hùng", class_id=c10a1.id, phone="0911111111",
-        address="Hà Nội",
-    )
-    s2 = Student(
-        name="Hoàng Thị Em", birth_date=date(2009, 8, 20), gender="female",
-        ban_hoc="xa_hoi", parent_name="Hoàng Văn Nam", class_id=c10a1.id, phone="0912222222",
-        address="Hà Nội",
-    )
-    s3 = Student(
-        name="Vũ Quốc Phong", birth_date=date(2009, 3, 3), gender="male",
-        ban_hoc="tu_nhien", parent_name="Vũ Thị Lan", class_id=c10a2.id, phone="0913333333",
-        address="Hải Phòng",
-    )
-    db.session.add_all([s1, s2, s3])
-    db.session.flush()
-    for s in (s1, s2, s3):
-        s.assign_code()
+    s1 = db.students.insert_one({
+        "name": "Phạm Minh Đức", "birth_date": "2009-05-12", "gender": "male",
+        "ban_hoc": "tu_nhien", "parent_name": "Phạm Văn Hùng", "class_id": c10a1,
+        "phone": "0911111111", "address": "Hà Nội", "conduct": "tot", "status": "studying",
+    }).inserted_id
+    s2 = db.students.insert_one({
+        "name": "Hoàng Thị Em", "birth_date": "2009-08-20", "gender": "female",
+        "ban_hoc": "xa_hoi", "parent_name": "Hoàng Văn Nam", "class_id": c10a1,
+        "phone": "0912222222", "address": "Hà Nội", "conduct": "tot", "status": "studying",
+    }).inserted_id
+    s3 = db.students.insert_one({
+        "name": "Vũ Quốc Phong", "birth_date": "2009-03-03", "gender": "male",
+        "ban_hoc": "tu_nhien", "parent_name": "Vũ Thị Lan", "class_id": c10a2,
+        "phone": "0913333333", "address": "Hải Phòng", "conduct": "kha", "status": "studying",
+    }).inserted_id
+    for i, sid in enumerate((s1, s2, s3), start=1):
+        db.students.update_one({"_id": sid}, {"$set": {"code": f"HS-{i:05d}"}})
 
-    hk1 = Semester(name="Học kỳ 1", academic_year="2025-2026", is_current=True)
-    hk2 = Semester(name="Học kỳ 2", academic_year="2025-2026", is_current=False)
-    db.session.add_all([hk1, hk2])
-    db.session.flush()
+    hk1 = db.semesters.insert_one({
+        "name": "Học kỳ 1", "academic_year": "2025-2026", "is_current": True,
+    }).inserted_id
+    db.semesters.insert_one({
+        "name": "Học kỳ 2", "academic_year": "2025-2026", "is_current": False,
+    })
 
-    db.session.add_all([
-        Grade(student_id=s1.id, subject_id=subjects[0].id, semester_id=hk1.id,
-              score_mieng=8, score_15p=8.5, score_1tiet=9, score_thi=8.5),
-        Grade(student_id=s1.id, subject_id=subjects[1].id, semester_id=hk1.id,
-              score_mieng=7, score_15p=7.5, score_1tiet=8, score_thi=7.5),
-        Grade(student_id=s2.id, subject_id=subjects[0].id, semester_id=hk1.id,
-              score_mieng=9, score_15p=8, score_1tiet=8.5, score_thi=9),
-        Grade(student_id=s3.id, subject_id=subjects[2].id, semester_id=hk1.id,
-              score_mieng=8, score_15p=8, score_1tiet=7.5, score_thi=8),
+    db.grades.insert_many([
+        {
+            "student_id": s1, "subject_id": subject_ids[0], "semester_id": hk1,
+            "score_mieng": 8, "score_15p": 8.5, "score_1tiet": 9, "score_thi": 8.5,
+        },
+        {
+            "student_id": s1, "subject_id": subject_ids[1], "semester_id": hk1,
+            "score_mieng": 7, "score_15p": 7.5, "score_1tiet": 8, "score_thi": 7.5,
+        },
+        {
+            "student_id": s2, "subject_id": subject_ids[0], "semester_id": hk1,
+            "score_mieng": 9, "score_15p": 8, "score_1tiet": 8.5, "score_thi": 9,
+        },
+        {
+            "student_id": s3, "subject_id": subject_ids[2], "semester_id": hk1,
+            "score_mieng": 8, "score_15p": 8, "score_1tiet": 7.5, "score_thi": 8,
+        },
     ])
 
-    db.session.add(ClassTransfer(
-        student_id=s3.id,
-        from_class_id=c10a1.id,
-        to_class_id=c10a2.id,
-        transfer_date=date(2025, 9, 15),
-        reason="Điều chỉnh sĩ số lớp",
-    ))
+    db.transfers.insert_one({
+        "student_id": s3,
+        "from_class_id": c10a1,
+        "to_class_id": c10a2,
+        "transfer_date": "2025-09-15",
+        "reason": "Điều chỉnh sĩ số lớp",
+    })
 
-    admin = User(username="admin", full_name="Quản trị viên", role="admin")
-    admin.set_password("admin123")
-
-    teacher_user = User(username="gv01", full_name=t1.name, role="teacher", teacher_id=t1.id)
-    teacher_user.set_password("gv123")
-
-    parent_user = User(username="phuhuynh01", full_name=s1.parent_name, role="parent", student_id=s1.id)
-    parent_user.set_password("ph123")
-
-    db.session.add_all([admin, teacher_user, parent_user])
-    db.session.commit()
+    db.users.insert_many([
+        {
+            "username": "admin",
+            "full_name": "Quản trị viên",
+            "role": "admin",
+            "password_hash": hash_password("admin123"),
+            "is_active": True,
+        },
+        {
+            "username": "gv01",
+            "full_name": "Nguyễn Văn An",
+            "role": "teacher",
+            "teacher_id": t1,
+            "password_hash": hash_password("gv123"),
+            "is_active": True,
+        },
+        {
+            "username": "phuhuynh01",
+            "full_name": "Phạm Văn Hùng",
+            "role": "parent",
+            "student_id": s1,
+            "password_hash": hash_password("ph123"),
+            "is_active": True,
+        },
+    ])

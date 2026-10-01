@@ -13,35 +13,6 @@ logging.basicConfig(
 logger = logging.getLogger("quanlythpt")
 
 
-def _database_uri():
-    if os.environ.get("DATABASE_URL"):
-        return os.environ["DATABASE_URL"]
-
-    # Azure App Service: /home luôn ghi được và persistent
-    candidates = []
-    if os.path.isdir("/home"):
-        candidates.append("/home/data")
-    candidates.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "data"))
-    candidates.append("/tmp/quanlythpt")
-
-    for data_dir in candidates:
-        try:
-            os.makedirs(data_dir, exist_ok=True)
-            test_file = os.path.join(data_dir, ".write_test")
-            with open(test_file, "w", encoding="utf-8") as f:
-                f.write("ok")
-            os.remove(test_file)
-            db_file = os.path.join(data_dir, "school.db").replace("\\", "/")
-            uri = "sqlite:///" + db_file
-            logger.info("Using database: %s", uri)
-            return uri
-        except Exception as exc:
-            logger.warning("Cannot use data dir %s: %s", data_dir, exc)
-
-    logger.warning("Fallback to in-memory SQLite")
-    return "sqlite://"
-
-
 def create_app():
     app = Flask(
         __name__,
@@ -49,40 +20,42 @@ def create_app():
         template_folder="frontend",
     )
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "quan-ly-thpt-azure-secret")
-    app.config["SQLALCHEMY_DATABASE_URI"] = _database_uri()
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
     init_error = None
     try:
         from api import api_bp
-        from models import db
+        from db import init_db
         from seed import seed_demo_data
 
-        db.init_app(app)
-        app.register_blueprint(api_bp)
+        # Mặc định local nếu chưa set
+        if not os.environ.get("MONGODB_URI") and not os.environ.get("MONGO_URL"):
+            os.environ["MONGODB_URI"] = "mongodb://127.0.0.1:27017"
 
-        with app.app_context():
-            db.create_all()
-            seed_demo_data()
-        logger.info("Database initialized and demo data ready")
+        init_db()
+        seed_demo_data()
+        app.register_blueprint(api_bp)
+        logger.info("MongoDB connected and demo data ready")
     except Exception:
         init_error = traceback.format_exc()
-        logger.error("App init failed:\n%s", init_error)
+        logger.error("MongoDB init failed:\n%s", init_error)
 
     @app.get("/")
     def index():
         if init_error:
             return (
-                "<h1>App đang lỗi khởi tạo DB</h1>"
-                "<p>Xem Log stream trên Azure để biết chi tiết.</p>"
-                f"<pre>{init_error}</pre>"
+                "<h1>App đang lỗi kết nối MongoDB</h1>"
+                "<p>Hãy cấu hình Application Setting <code>MONGODB_URI</code> trên Azure.</p>"
+                f"<pre style='white-space:pre-wrap'>{init_error}</pre>"
             ), 500
         return render_template("index.html")
 
     @app.get("/health")
     def health():
-        return jsonify({"status": "ok", "init_error": bool(init_error)})
+        payload = {"status": "ok" if not init_error else "error", "db": "mongodb"}
+        if init_error:
+            payload["error"] = init_error.splitlines()[-1]
+        return jsonify(payload), (200 if not init_error else 500)
 
     return app
 

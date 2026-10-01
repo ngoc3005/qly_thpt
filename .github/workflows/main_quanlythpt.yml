@@ -12,6 +12,12 @@ jobs:
     permissions:
       contents: read
 
+    services:
+      mongo:
+        image: mongo:7
+        ports:
+          - 27017:27017
+
     steps:
       - uses: actions/checkout@v4
 
@@ -21,6 +27,9 @@ jobs:
           python-version: '3.11'
 
       - name: Create venv, install deps, smoke test
+        env:
+          MONGODB_URI: mongodb://127.0.0.1:27017
+          MONGODB_DB: quanlythpt_ci
         run: |
           python -m venv antenv
           source antenv/bin/activate
@@ -29,7 +38,7 @@ jobs:
           python - <<'PY'
           from app import app
           c = app.test_client()
-          assert c.get('/health').status_code == 200
+          assert c.get('/health').status_code == 200, c.get('/health').get_json()
           r = c.post('/api/auth/login', json={'username': 'admin', 'password': 'admin123'})
           assert r.status_code == 200, r.get_json()
           print('smoke ok')
@@ -44,6 +53,8 @@ jobs:
             api.py
             models.py
             seed.py
+            db.py
+            application.py
             requirements.txt
             runtime.txt
             startup.txt
