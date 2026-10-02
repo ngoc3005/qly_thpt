@@ -1,7 +1,7 @@
 {
-  "name": "qly-thpt",
+  "name": "backend",
   "version": "1.0.0",
-  "description": "Module quản lý học sinh trung học phổ thông",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Chua co test\" && exit 0",
@@ -26,6 +26,7 @@
     "pdf-creator-node": "^2.3.5",
     "pdfkit": "^0.15.0",
     "puppeteer": "^22.6.3",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "razorpay": "^2.9.2"
   }
 }

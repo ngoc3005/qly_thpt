@@ -24,10 +24,10 @@ export const Signup = (props) => {
       //save the authtoken and redirect
       localStorage.setItem('token', json.authtoken);
       navigate("/");
-      props.showAlert("success", "Đăng ký thành công");
+      props.showAlert("success", "Successfully Signed In");
     }
     else {
-      props.showAlert("danger", "Email này đã được đăng ký");
+      props.showAlert("danger", "A user with this email already exists");
 
     }
   }
@@ -41,12 +41,12 @@ export const Signup = (props) => {
           <div className="card-body p-md-5">
             <div className="row justify-content-center">
               <div className="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-                <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4">Đăng ký giáo viên</p>
+                <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4">Sign up</p>
                 <form className="mx-1 mx-md-4" onSubmit={handleSubmit}>
                   <div className="d-flex flex-row align-items-center mb-4">
                     <i className="fas fa-user fa-lg me-3 fa-fw"></i>
                     <div className="form-outline flex-fill mb-0">
-                      <label className="form-label" htmlFor="name">Họ tên</label>
+                      <label className="form-label" htmlFor="name">Your Name</label>
                       <input type="text" id="name" className="form-control" name='name' onChange={onChange} />
                     </div>
                   </div>
@@ -54,9 +54,9 @@ export const Signup = (props) => {
                   <div className="d-flex flex-row align-items-center mb-4">
                     <i className="fas fa-envelope fa-lg me-3 fa-fw"></i>
                     <div className="form-outline flex-fill mb-0">
-                      <label className="form-label" htmlFor="email">Email</label>
+                      <label className="form-label" htmlFor="email">Your Email</label>
                       <input type="email" id="email" placeholder='Enter a valid email' className="form-control" name='email' onChange={onChange} />
-                      <div id="emailHelp" className="form-text">Email dùng để đăng nhập sổ học sinh.</div>
+                      <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
 
                     </div>
                   </div>
@@ -64,29 +64,29 @@ export const Signup = (props) => {
                   <div className="d-flex flex-row align-items-center mb-4">
                     <i className="fas fa-lock fa-lg me-3 fa-fw"></i>
                     <div className="form-outline flex-fill mb-0">
-                      <label className="form-label" htmlFor="password">Mật khẩu</label>
-                      <input type="password" id="password" placeholder='Tối thiểu 8 ký tự' className="form-control" name='password' onChange={onChange} minLength={8} required />
+                      <label className="form-label" htmlFor="password">Password</label>
+                      <input type="password" id="password" placeholder='Password must have a minimum of 8 characters' className="form-control" name='password' onChange={onChange} minLength={8} required />
                     </div>
                   </div>
 
                   <div className="form-check d-flex justify-content-center mb-5">
                     <input className="form-check-input me-2" type="checkbox" value="" id="form2Example3c" onChange={onChange} />
                     <label className="form-check-label" htmlFor="form2Example3">
-                      Tôi đồng ý dùng tài khoản này để nhập kết quả học sinh
+                      I agree all statements in <a href="#!">Terms of service</a>
                     </label>
                   </div>
 
                   <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                    <button type="submit" className="btn btn-primary btn-lg">Đăng ký</button>
+                    <button type="submit" className="btn btn-warning btn-lg">Register</button>
                   </div>
 
                 </form>
 
               </div>
               <div className="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-                <h2>Tạo tài khoản giáo viên để quản lý lớp</h2>
+                <h2>Register To Get Started With Us</h2>
                 <img src={logo}
-                  className="img-fluid" alt="Logo" width={120} />
+                  className="img-fluid" alt="Sample image" width={120} />
 
               </div>
             </div>

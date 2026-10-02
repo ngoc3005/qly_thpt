@@ -1,29 +1,26 @@
 const mongoose = require('mongoose');
 
-const KetQuaSchema = new mongoose.Schema({
+const BookingSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user'
   },
-  hocSinh: {
+  room: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'hocsinh',
+    ref: 'room',
+    // required: true
   },
-  lop: {
+  hotel: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'lop',
+    ref: 'hotel',
     required: true
   },
-  monHoc: [String],
-  diemTB: {
-    type: Number,
-    required: true
-  },
-  ngayBatDau: {
+  addons: [String], // Array of addon names
+  checkInDate: {
     type: Date,
     required: true
   },
-  ngayKetThuc: {
+  checkOutDate: {
     type: Date,
     required: true
   },
@@ -33,5 +30,5 @@ const KetQuaSchema = new mongoose.Schema({
   }
 });
 
-const KetQua = mongoose.model('ketqua', KetQuaSchema);
-module.exports = KetQua;
+const Booking = mongoose.model('booking', BookingSchema);
+module.exports = Booking;

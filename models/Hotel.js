@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const lopSchema = new mongoose.Schema({
+const hotelSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -25,11 +25,12 @@ const lopSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
-  siSo: {
+  // Add the field to store the count of bookings
+  bookingCount: {
     type: Number,
     default: 0,
   },
 });
 
-const Lop = mongoose.model('lop', lopSchema);
-module.exports = Lop;
+const Hotel = mongoose.model('hotel', hotelSchema);
+module.exports = Hotel;

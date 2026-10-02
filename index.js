@@ -1,21 +1,30 @@
 const express = require('express');
+const Razorpay = require('razorpay');
 const connectToMongo = require('./db');
 const cors = require('cors');
 const app = express();
 const path = require("path");
+// Enable CORS for all routes
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const capNhatHocKyTask = require('./capNhatHocKy');
+const updateRoomAvailabilityTask = require('./roomAvail');
 const port = process.env.PORT || 5000;
 connectToMongo();
-capNhatHocKyTask();
+updateRoomAvailabilityTask();
+const instance = new Razorpay({
+    key_id: 'rzp_test_RYkL6ztNu2mGqo',
+    key_secret: 'UrUu5X3O6cOEjNOL07Yxdrt5',
+  });
+
 
 app.use("/api/auth", require("./routes/auth"));
-app.use("/api/lop", require("./routes/lop"));
-app.use("/api/hocsinh", require("./routes/hocsinh"));
-app.use("/api/ketqua", require("./routes/ketqua"));
-app.use("/api/monhoc", require("./routes/monhoc"));
+app.use("/api/hotel", require("./routes/hotel"));
+app.use("/api/room", require("./routes/room"));
+app.use("/api/book", require("./routes/booking"));
+app.use("/api/addon", require("./routes/addon"));
+
+app.use("/api", require("./routes/paymentRoutes"));
 
 app.use(express.static("./frontend/build"));
 app.get("*", (req, res) => {
@@ -25,3 +34,5 @@ app.get("*", (req, res) => {
 app.listen(port, () => {
     console.log(`App is listening at ${port}`);
 })
+
+module.exports = instance;

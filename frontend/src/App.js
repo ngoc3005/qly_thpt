@@ -6,14 +6,14 @@ import { Login } from './components/Login';
 import { Alert } from './components/Alert';
 import { Signup } from './components/SignUp';
 import { Home } from './components/Home';
-import { LopHoc } from './components/LopHoc';
-import { HocSinhLop } from './components/HocSinhLop';
-import { HocSinhDangHoc } from './components/HocSinhDangHoc';
+import { Hotels } from './components/Hotels';
+import { Rooms } from './components/Rooms';
+import { AvailableRooms } from './components/AvailableRooms';
 import Footer from './components/Footer';
-import KetQuaCuaToi from './components/KetQuaCuaToi';
+import MyBookings from './components/MyBookings';
+import PaymentSuccess from './components/PaymentSuccess';
 import { About } from './components/About';
-import { TaoLop } from './components/TaoLop';
-import { MonHocPage } from './components/MonHocPage';
+import { CreateHotel } from './components/CreateHotel';
 
 function App() {
   const [alert, setAlert] = useState(null);
@@ -34,19 +34,19 @@ function App() {
         <Alert alert={alert} />
         <Routes>
           <Route path="/" element={<Home showAlert={showAlert} />} />
-          <Route exact path="/gioithieu" element={<About />} />
-          <Route exact path="/lop" element={<LopHoc />} />
-          <Route exact path="/taolop" element={<TaoLop showAlert={showAlert} />} />
-          <Route exact path="/hocsinh" element={<HocSinhDangHoc showAlert={showAlert} />} />
-          <Route exact path="/lop/:lopId" element={<HocSinhLop showAlert={showAlert} />} />
-          <Route exact path="/ketqua" element={<KetQuaCuaToi showAlert={showAlert} />} />
-          <Route exact path="/monhoc" element={<MonHocPage showAlert={showAlert} />} />
+          <Route exact path="/about" element={<About />} />
+          <Route exact path="/hotels" element={<Hotels />} />
+          <Route exact path="/createhotel" element={<CreateHotel showAlert={showAlert} />} />
+          <Route exact path="/rooms" element={<AvailableRooms showAlert={showAlert} />} />
+          <Route exact path="/api/room/getRooms/:hotelId" element={<Rooms showAlert={showAlert} />} />
+          <Route exact path="/mybookings" element={<MyBookings showAlert={showAlert} />} />
+          <Route exact path="/paymentsuccess" element={<PaymentSuccess showAlert={showAlert} />} />
 
           <Route exact path="/login" element={<Login showAlert={showAlert} />} />
           <Route exact path="/signup" element={<Signup showAlert={showAlert} />} />
         </Routes>
         <Footer />
-
+       
       </BrowserRouter>
     </>
   );

@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('hien thi ten module quan ly hoc sinh', () => {
+test('renders learn react link', () => {
   render(<App />);
-  const brand = screen.getAllByText(/THPT/i);
-  expect(brand.length).toBeGreaterThan(0);
+  const linkElement = screen.getByText(/learn react/i);
+  expect(linkElement).toBeInTheDocument();
 });

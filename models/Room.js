@@ -1,27 +1,27 @@
 const mongoose = require('mongoose');
-const hocSinhSchema = new mongoose.Schema({
-    lop: {
+const roomSchema = new mongoose.Schema({
+    hotel: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'lop'
+        ref: 'hotel'
     },
-    maHS: {
+    roomNumber: {
         type: String,
         required: true
     },
-    hoTen: {
+    roomType: {
         type: String,
         required: true,
     },
-    ghiChu: String,
-    namSinh: {
+    description: String,
+    pricing: {
         type: Number,
         required: true,
     },
-    dangHoc: {
+    availability: {
         type: Boolean,
         default: true,
     }
 });
 
-const HocSinh = mongoose.model('hocsinh', hocSinhSchema);
-module.exports = HocSinh;
+const Room = mongoose.model('room', roomSchema);
+module.exports = Room;
