@@ -1,23 +1,46 @@
-//try to fetch jwt_secret value from .env
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = process.env.JWT_SECRET;
 require("dotenv").config();
-// console.log("getUser se secret key aa rhi h",JWT_SECRET);
+const JWT_SECRET = process.env.JWT_SECRET;
+const User = require("../models/User");
 
-const getUser = (req, res, next) => {
-    const token = req.header("auth-token");
-    if(!token){
-        res.status(401).send({error: "Please authenticate using a valid token"});
+const getUser = async (req, res, next) => {
+  const token = req.header("auth-token");
+  if (!token) {
+    return res
+      .status(401)
+      .send({ error: "Vui lòng đăng nhập bằng token hợp lệ" });
+  }
+  try {
+    const data = jwt.verify(token, JWT_SECRET);
+    req.user = data.user;
+    const user = await User.findById(data.user).select("-password");
+    if (!user) {
+      return res.status(401).send({ error: "Người dùng không tồn tại" });
     }
-    try{
-        const data = jwt.verify(token, JWT_SECRET);
-        // console.log(data);
-        //use req.user in route
-        req.user  = data.user;
-        next();
-    }
-    catch(error){
-        res.status(401).send({error: "Please authenticate using a valid token"});
-    }
-}
-module.exports = getUser;
+    req.userInfo = user;
+    next();
+  } catch (error) {
+    return res
+      .status(401)
+      .send({ error: "Vui lòng đăng nhập bằng token hợp lệ" });
+  }
+};
+
+const requireAdmin = (req, res, next) => {
+  if (!req.userInfo || req.userInfo.role !== "admin") {
+    return res.status(403).json({ error: "Chỉ quản trị viên mới được phép" });
+  }
+  next();
+};
+
+const requireStaff = (req, res, next) => {
+  if (
+    !req.userInfo ||
+    !["admin", "giaovien"].includes(req.userInfo.role)
+  ) {
+    return res.status(403).json({ error: "Không có quyền truy cập" });
+  }
+  next();
+};
+
+module.exports = { getUser, requireAdmin, requireStaff };

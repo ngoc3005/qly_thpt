@@ -1,57 +1,97 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { getStoredUser, isLoggedIn } from "../api";
 
 export const Navbar = () => {
-    const handleLogout = () => {
-        localStorage.clear();
-    }
-    let location = useLocation();
+  const navigate = useNavigate();
+  const loggedIn = isLoggedIn();
+  const user = getStoredUser();
 
-    // useEffect(() => {
-    //     console.log(location.pathname);
-    // }, [location]);
-    return (
-        <nav className="navbar navbar-expand-lg bg-warning-subtle">
-            <div className="container-fluid">
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/");
+    window.location.reload();
+  };
 
-                <Link className="navbar-brand" to="/">
-                    {/* <img src={logo} alt="Logo" width="100" height="100" class="d-inline-block align-text-top" /> */}
-
-                    <span className='text-warning fs-3'>C</span>elebInn</Link>
-                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
+  return (
+    <nav className="navbar navbar-expand-lg navbar-thpt sticky-top">
+      <div className="container-fluid px-3 px-lg-4">
+        <Link className="navbar-brand" to="/">
+          THPT Portal
+        </Link>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/">
+                Tra cứu điểm
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/about">
+                Giới thiệu
+              </NavLink>
+            </li>
+            {loggedIn && (
+              <>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/dashboard">
+                    Tổng quan
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/quanly/diem">
+                    Điểm số
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/quanly/lop">
+                    Lớp học
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/quanly/hocsinh">
+                    Học sinh
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/quanly/monhoc">
+                    Môn học
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/quanly/giaovien">
+                    Giáo viên
+                  </NavLink>
+                </li>
+              </>
+            )}
+          </ul>
+          <div className="d-flex align-items-center gap-2">
+            {loggedIn ? (
+              <>
+                <span className="badge-role">
+                  {user?.name} · {user?.role === "admin" ? "Admin" : "Giáo viên"}
+                </span>
+                <button className="btn btn-sm btn-outline-dark" onClick={handleLogout}>
+                  Đăng xuất
                 </button>
-                <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li className="nav-item">
-                            <Link className={`nav-link ${location.pathname === "/" ? "active" : ""}`} aria-current="page" to="/">Home</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className={`nav-link ${location.pathname === "/hotels" ? "active" : ""}`} aria-current="page" to="/hotels">Hotels</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className={`nav-link ${location.pathname === "/rooms" ? "active" : ""}`} aria-current="page" to="/rooms">Rooms</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className={`nav-link ${location.pathname === "/about" ? "active" : ""}`} aria-current="page" to="/about">About Us</Link>
-                        </li>
-                        {/* <li className="nav-item">
-                            <Link className={`nav-link ${location.pathname === "/createhotel" ? "active" : ""}`} aria-current="page" to="/createhotel">Create Hotel</Link>
-                        </li> */}
-                        <li className="nav-item">
-                            <Link className={`nav-link ${location.pathname === "/mybookings" ? "active" : ""}`} aria-current="page" to="/mybookings">My Bookings</Link>
-                        </li>
-                    </ul>
-
-                    {!localStorage.getItem('token') ? <form className="d-flex mx-5">
-                        <Link className="btn btn-outline-warning text-dark" to='/login'>Log In</Link>
-                        <Link className="btn btn-warning mx-2" to='/signup'>Sign Up</Link>
-                    </form> :
-                        <Link className="btn btn-outline-warning" to='/login' onClick={handleLogout}>Log Out</Link>
-                    }
-                </div>
-            </div>
-        </nav>
-    )
-}
-
+              </>
+            ) : (
+              <Link className="btn btn-sm btn-leaf" to="/login">
+                Đăng nhập cán bộ
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+};

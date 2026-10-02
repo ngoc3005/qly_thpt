@@ -1,39 +1,280 @@
+:root {
+  --ink: #0f2a1f;
+  --leaf: #1b6b4a;
+  --leaf-dark: #0f4a32;
+  --mint: #d8f0e4;
+  --sand: #f4efe6;
+  --cream: #faf7f2;
+  --accent: #c45c26;
+  --line: rgba(15, 42, 31, 0.12);
+  --shadow: 0 18px 50px rgba(15, 42, 31, 0.08);
+  --radius: 18px;
+  --font-display: "Be Vietnam Pro", "Segoe UI", sans-serif;
+  --font-body: "Be Vietnam Pro", "Segoe UI", sans-serif;
+}
+
 * {
-  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
 }
 
-.carousel-caption {
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(27, 107, 74, 0.12), transparent 35%),
+    radial-gradient(circle at top right, rgba(196, 92, 38, 0.08), transparent 30%),
+    linear-gradient(180deg, #f7fbf8 0%, var(--cream) 45%, #f3ebe0 100%);
+  min-height: 100vh;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+}
+
+a {
+  text-decoration: none;
+}
+
+.portal-hero {
+  position: relative;
+  min-height: calc(100vh - 72px);
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 2rem;
+  align-items: center;
+  padding: 3rem clamp(1.2rem, 5vw, 5rem);
+  overflow: hidden;
+}
+
+.portal-hero::before {
+  content: "";
   position: absolute;
-  top: 50%;
-  left: 50%;
+  inset: 0;
+  background:
+    linear-gradient(120deg, rgba(15, 42, 31, 0.82), rgba(15, 74, 50, 0.55)),
+    url("./images/front2.png") center/cover no-repeat;
+  z-index: 0;
+}
+
+.portal-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.brand-mark {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 6vw, 4.8rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #fff;
+  line-height: 1.05;
+  margin: 0 0 1rem;
+}
+
+.hero-lead {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 1.1rem;
+  max-width: 34rem;
+  margin-bottom: 1.5rem;
+}
+
+.lookup-card {
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: var(--radius);
+  padding: 1.6rem;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(8px);
+}
+
+.lookup-card h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.35rem;
+}
+
+.lookup-card p {
+  color: #5b6b63;
+  margin-bottom: 1.2rem;
+}
+
+.score-panel {
+  margin-top: 1.2rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+}
+
+.score-meta {
+  display: grid;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+
+.table-wrap table {
+  margin: 0;
   width: 100%;
-  transform: translate(-50%, -50%);
-  /* background-color: rgba(0, 0, 0, 0.5); */
-  /* Add background color for better readability */
-  /* padding: 10px; */
-  color: white;
-  /* border-radius: 5px; */
-  text-shadow: 5px 5px 5px #ffc107;
-  font-size: 80px;
 }
 
-.b-image {
-  filter: blur(3px);
-}
-.navbar-brand{
-  margin-left: 20px;
+.page {
+  padding: 1.5rem clamp(1rem, 4vw, 3rem) 3rem;
 }
 
-@media only screen and (max-width: 600px) {
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
 
-  .carousel-caption{
-    top: 40%;
-    font-size: 15px;
-  }
-  .explore{
-    visibility: hidden;
-  }
-  .navbar-brand{
-    margin-left: 1px;
+.page-head h1 {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.page-head p {
+  margin: 0.25rem 0 0;
+  color: #5b6b63;
+}
+
+.panel {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+.stat-card {
+  background: linear-gradient(160deg, #fff, var(--mint));
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 1.1rem 1.2rem;
+}
+
+.stat-card .label {
+  color: #5b6b63;
+  font-size: 0.9rem;
+}
+
+.stat-card .value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--leaf-dark);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.85rem;
+}
+
+.btn-leaf {
+  background: var(--leaf);
+  border-color: var(--leaf);
+  color: #fff;
+}
+
+.btn-leaf:hover {
+  background: var(--leaf-dark);
+  border-color: var(--leaf-dark);
+  color: #fff;
+}
+
+.btn-accent {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.btn-accent:hover {
+  filter: brightness(0.95);
+  color: #fff;
+}
+
+.navbar-thpt {
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+
+.navbar-thpt .navbar-brand {
+  font-weight: 800;
+  color: var(--leaf-dark) !important;
+  letter-spacing: -0.02em;
+}
+
+.navbar-thpt .nav-link {
+  color: var(--ink) !important;
+  font-weight: 500;
+}
+
+.navbar-thpt .nav-link.active,
+.navbar-thpt .nav-link:hover {
+  color: var(--leaf) !important;
+}
+
+.footer-thpt {
+  background: var(--ink);
+  color: rgba(255, 255, 255, 0.78);
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.login-wrap {
+  min-height: calc(100vh - 140px);
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+}
+
+.login-card {
+  width: min(460px, 100%);
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  padding: 2rem;
+}
+
+.badge-role {
+  background: var(--mint);
+  color: var(--leaf-dark);
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+  .portal-hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding-top: 2rem;
+    padding-bottom: 2.5rem;
   }
 }
