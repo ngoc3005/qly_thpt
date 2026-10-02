@@ -11,7 +11,7 @@ async function startMemoryMongo() {
 }
 
 async function connectToMongo() {
-  let uri = process.env.DB_URI;
+  let uri = process.env.MONGODB_URI || process.env.DB_URI;
   const useMemory =
     process.env.USE_MEMORY_DB === "1" ||
     process.env.USE_MEMORY_DB === "true";
@@ -21,8 +21,9 @@ async function connectToMongo() {
       uri = await startMemoryMongo();
     }
     if (!uri) {
-      throw new Error("Thiếu DB_URI trong file .env");
+      throw new Error("Thiếu MONGODB_URI hoặc DB_URI trong file .env");
     }
+    console.log("Đang kết nối MongoDB...");
     await mongoose.connect(uri, { serverSelectionTimeoutMS: 5000 });
     console.log("Connected to MongoDB");
     return true;
